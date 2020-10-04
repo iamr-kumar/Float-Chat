@@ -1,0 +1,3 @@
+{
+  "mongodbURI": "mongodb://zacker:zacker@float-chat-shard-00-00.35wbo.mongodb.net:27017,float-chat-shard-00-01.35wbo.mongodb.net:27017,float-chat-shard-00-02.35wbo.mongodb.net:27017/float-chat?ssl=true&replicaSet=atlas-xq5ces-shard-0&authSource=admin&retryWrites=true&w=majority"
+}
