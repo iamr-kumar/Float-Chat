@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Float Chat</title>
+    <link rel="stylesheet" type="text/css" href="/stylesheets/style.css" />
+  </head>
+  <body>
+    <!-- <header>
+      <h1>Super Chat</h1>
+    </header>
+
+    <section>
+      <div id="change_username">
+        <input id="username" type="text" />
+        <button id="send_username" type="button">Change username</button>
+      </div>
+    </section>
+
+    <section id="chatroom">
+      <section id="feedback"></section>
+    </section>
+
+    <section id="input_zone">
+      <input id="message" class="vertical-align" type="text" />
+      <button id="send_message" class="vertical-align" type="button">
+        Send
+      </button>
+    </section> -->
+    <ul>
+      <%=currentUser.username %>
+    <% if(users && users.length > 0) { %>
+      <% users.forEach(user => { %>
+        <% if(user.name != currentUser.username){ %>
+        <li>
+          <%= user.name %>
+        </li>
+      <%}}) %>
+    <% } %>
+    </ul>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script>
+      $(document).ready(function() {
+        var thisUser = '<%=currentUser.username%>';
+        const socket = io({
+          query: {
+            username: thisUser
+          }
+        });
+        socket.on('newUser', (data) => {
+          $("ul").append(`<li>${data.name}</li>`)
+        })
+      });
+    </script>
+  </body>
+</html>
