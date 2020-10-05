@@ -1,56 +1,215 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
-    <title>Float Chat</title>
-    <link rel="stylesheet" type="text/css" href="/stylesheets/style.css" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z"
+      crossorigin="anonymous"
+    />
+    <script
+      src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+      integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
+      crossorigin="anonymous"
+    ></script>
+
+    <link rel="stylesheet" href="/stylesheets/style.css" />
+    <title>Chat App</title>
   </head>
+
   <body>
-    <!-- <header>
-      <h1>Super Chat</h1>
-    </header>
-
-    <section>
-      <div id="change_username">
-        <input id="username" type="text" />
-        <button id="send_username" type="button">Change username</button>
+    <div class="messaging">
+      <div class="inbox_msg">
+        <div class="inbox_people">
+          <div class="headind_srch">
+            <div class="recent_heading">
+              <h4>Recent</h4>
+            </div>
+            <div class="srch_bar">
+              <div class="stylish-input-group">
+                <input type="text" class="search-bar" placeholder="Search" />
+                <span class="input-group-addon">
+                  <button type="button">
+                    <i class="fa fa-search" aria-hidden="true"></i>
+                  </button>
+                </span>
+              </div>
+            </div>
+          </div>
+          <div class="inbox_chat">
+            <% for (var i=0; i< users.length; i++){ %> <%
+            if(users[i].name!=currentUser.username){ %>
+            <div class="chat_list" style="cursor: pointer">
+              <div class="chat_people">
+                <div class="chat_img">
+                  <img
+                    src="https://ptetutorials.com/images/user-profile.png"
+                    alt="sunil"
+                  />
+                </div>
+                <div class="chat_ib">
+                  <h5><%= users[i].name %></h5>
+                </div>
+                <input type="hidden" class="u" value="<%= users[i].id %>" />
+              </div>
+            </div>
+            <% } %> <% } %>
+          </div>
+        </div>
+        <div class="mesgs">
+          <div class="msg_history">
+            <div class="col-12 mb-3 pt-0 mt-0">
+              <span id="username"></span>
+            </div>
+            <div class="incoming_msg">
+              <div class="incoming_msg_img">
+                <img
+                  src="https://ptetutorials.com/images/user-profile.png"
+                  alt="sunil"
+                />
+              </div>
+              <div class="received_msg">
+                <div class="received_withd_msg">
+                  <p>Test which is a new approach to have all solutions</p>
+                  <span class="time_date"> 11:01 AM | June 9</span>
+                </div>
+              </div>
+            </div>
+            <div class="outgoing_msg">
+              <div class="sent_msg">
+                <p>Test which is a new approach to have all solutions</p>
+                <span class="time_date"> 11:01 AM | June 9</span>
+              </div>
+            </div>
+          </div>
+          <div class="type_msg">
+            <span class="pencil_anim" style="display: none">Typing.....</span>
+            <div class="input_msg_write">
+              <input
+                type="text"
+                class="write_msg"
+                placeholder="Type a message"
+                style="border: 0; outline: none"
+              />
+              <button class="msg_send_btn" type="button">
+                <i class="fa fa-paper-plane-o" aria-hidden="true"></i>
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
-    </section>
+    </div>
 
-    <section id="chatroom">
-      <section id="feedback"></section>
-    </section>
-
-    <section id="input_zone">
-      <input id="message" class="vertical-align" type="text" />
-      <button id="send_message" class="vertical-align" type="button">
-        Send
-      </button>
-    </section> -->
-    <ul>
-      <%=currentUser.username %>
-    <% if(users && users.length > 0) { %>
-      <% users.forEach(user => { %>
-        <% if(user.name != currentUser.username){ %>
-        <li>
-          <%= user.name %>
-        </li>
-      <%}}) %>
-    <% } %>
-    </ul>
+    <script
+      src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+      integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
+      integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
+      crossorigin="anonymous"
+    ></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
-    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="/js/moment.min.js"></script>
+    <!-- <script src="/js/chatpagelogic.js"></script> -->
     <script>
-      $(document).ready(function() {
-        var thisUser = '<%=currentUser.username%>';
+      $(document).ready(function () {
+        var thisUser = "<%=currentUser.username%>";
+        const users = "<%=users%>";
         const socket = io({
           query: {
-            username: thisUser
+            username: thisUser,
+          },
+        });
+        var senderId;
+
+        socket.on("connect", () => {
+          senderId = socket.id;
+          // console.log(senderId);
+        });
+
+        socket.on("newUser", (data) => {
+          if (data.name.trim() !== thisUser.trim()) {
+            $(".inbox_chat").append(
+              `<div class="chat_list" style="cursor: pointer;">
+                <div class="chat_people">
+                  <div class="chat_img">
+                    <img
+                      src="https://ptetutorials.com/images/user-profile.png"
+                      alt="sunil"
+                    />
+                  </div>
+                  <div class="chat_ib">
+                    <h5>${data.name}</h5>
+                  </div>
+                  <input type="hidden" class="u" value="${data.id}" />
+                </div>
+              </div>`
+            );
           }
         });
-        socket.on('newUser', (data) => {
-          $("ul").append(`<li>${data.name}</li>`)
+
+        var reciever;
+        $(".chat_list").on("click", () => {
+          $(".chat_list").removeClass("active_chat");
+          $(this).addClass("active_chat");
+          reciever = $(this).find(".chat_ib").text();
+          reciever = reciever.trim();
+          // for(let i = 0; i < users.length; i++) {
+          //   if(users[i].name === reciever) {
+          //     recipientId = users[i].id;
+          //     break;
+          //   }
+          // }
+          // $(".msg_history").html("");
+          console.log(reciever);
+          // alert(recipient);
+        });
+
+        $(".msg_send_btn").on("click", () => {
+          console.log("Message sent!");
+          sendMessage();
+        });
+
+        const sendMessage = () => {
+          const data = $(".write_msg").val();
+          console.log(data);
+          socket.emit("message", {
+            from: thisUser,
+            to: reciever,
+            msg: data,
+          });
+          $(".msg_history").append(
+            `<div class="outgoing_msg">
+              <div class="sent_msg">
+                <p>${data}</p>
+                <span class="time_date"> ${moment().fromNow()}</span>
+              </div>
+            </div>`
+          );
+        };
+
+        socket.on("message", (data) => {
+            $(".msg_history").append(
+              `<div class="incoming_msg">
+                <div class="incoming_msg_img"><img src="https://ptetutorials.com/images/user-profile.png" alt="${
+                  data.from
+                }">
+                   <span class="username">${data.from}</span>
+                </div>
+                <div class="received_msg">
+                  <div class="received_withd_msg">
+                    <p>${data.msg}</p>
+                    <span class="time_date"> ${moment().fromNow()}</span>
+                  </div>
+                </div>
+              </div>`
+            );
+          });
         })
-      });
     </script>
   </body>
 </html>

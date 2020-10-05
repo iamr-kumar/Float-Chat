@@ -44,21 +44,28 @@ io.use((socket, next) => {
 });
 
 io.on("connection", (socket) => {
-  console.log("Made new connection");
+  // console.log("Made new connection");
   const token = socket.handshake.query.username;
   socket.on('disconnect', () => {
     const clientId = socket.id;
     users = users.filter(user => user.id !== clientId);
-  })
+  });
+
   users.push({
     id: socket.id,
     name: token
   });
 
-  io.emit('newUser', {
+  socket.on('message', (data) => {
+    const reciever = data.to;
+    const recieverId = users.find(user => user.name === reciever);
+    console.log(recieverId);
+    io.to(recieverId.id).emit('message', data);
+  });
+
+  socket.broadcast.emit('newUser', {
     id: socket.id,
     name: token
   });
 
-  console.log(users);
 });
