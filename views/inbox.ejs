@@ -119,6 +119,7 @@
       $(document).ready(function () {
         var thisUser = "<%=currentUser.username%>";
         const users = "<%=users%>";
+        // Initialize socket and make connection
         const socket = io({
           query: {
             username: thisUser,
@@ -131,6 +132,7 @@
           // console.log(senderId);
         });
 
+        // Append new user to list on a new connection
         socket.on("newUser", (data) => {
           if (data.name.trim() !== thisUser.trim()) {
             $(".inbox_chat").append(
@@ -152,28 +154,22 @@
           }
         });
 
+        // Get reciver on clicking on a user from the active user's list
         var reciever;
         $(".chat_list").on("click", () => {
-          $(".chat_list").removeClass("active_chat");
-          $(this).addClass("active_chat");
-          reciever = $(this).find(".chat_ib").text();
-          reciever = reciever.trim();
-          // for(let i = 0; i < users.length; i++) {
-          //   if(users[i].name === reciever) {
-          //     recipientId = users[i].id;
-          //     break;
-          //   }
-          // }
-          // $(".msg_history").html("");
-          console.log(reciever);
-          // alert(recipient);
+          $(".chat_list").removeClass("active_chat");     // not working!!!!!!!
+          $(this).addClass("active_chat");                // not working!!!!!!!
+          reciever = $(this).find(".chat_ib").text().trim();
+          $(".msg_history").html("");
+          // console.log(reciever);
         });
 
         $(".msg_send_btn").on("click", () => {
-          console.log("Message sent!");
+          // console.log("Message sent!");
           sendMessage();
         });
 
+        // Emit a message event with message data as payload
         const sendMessage = () => {
           const data = $(".write_msg").val();
           console.log(data);
@@ -192,6 +188,7 @@
           );
         };
 
+        // On recieving a message from the server
         socket.on("message", (data) => {
             $(".msg_history").append(
               `<div class="incoming_msg">
@@ -209,7 +206,7 @@
               </div>`
             );
           });
-        })
+        });
     </script>
   </body>
 </html>
