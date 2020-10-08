@@ -50,6 +50,7 @@ body {
 
 #chat_names_ul {
     font-size: x-large;
+    margin-top: 1rem;
 }
 
 ul {
@@ -59,6 +60,20 @@ ul {
 #chat_names_ul li:hover {
     cursor: pointer;
     background-color: #18202e9d;
+}
+
+.single-user {
+  display: flex;
+  justify-content: space-around;
+}
+
+.username {
+  margin-left: 2rem;
+}
+
+.user-image {
+  width: 4rem;
+  height: 4rem;
 }
 
 ul>li.active {

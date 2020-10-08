@@ -3,6 +3,7 @@ const router = express.Router();
 const User = require("../models/users");
 const bcrypt = require("bcrypt");
 const { check, validationResult } = require("express-validator");
+const { generateVirgilJwt } = require("../api/virgilToken");
 
 router.get("/login", (req, res) => {
   res.render("login");
@@ -39,6 +40,10 @@ router.post(
 
   }
 );
+
+// const generatorPromise = getJwtGenerator();
+
+router.get('/virgil-jwt', generateVirgilJwt);
 
 router.get("/inbox", (req, res) => {
   res.render("inbox", {currentUser: req.session.currentUser, users});

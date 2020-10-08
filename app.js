@@ -4,6 +4,7 @@ const connectDb = require("./config/db");
 const socket = require("socket.io");
 const session = require("express-session");
 
+
 // Connect to db
 connectDb();
 

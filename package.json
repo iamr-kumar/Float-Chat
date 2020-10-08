@@ -23,6 +23,8 @@
     "express-session": "^1.17.1",
     "express-validator": "^6.6.1",
     "mongoose": "^5.10.1",
-    "socket.io": "^2.3.0"
+    "socket.io": "^2.3.0",
+    "virgil-crypto": "^4.2.2",
+    "virgil-sdk": "^6.1.2"
   }
 }
