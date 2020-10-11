@@ -1,0 +1,54 @@
+.navbar-brand {
+  font-size: 59px;
+}
+.container-fluid {
+  margin-top: 30px;
+}
+.form-show {
+  margin-top: 50px;
+  width: 400px;
+  height: 500px;
+  -moz-box-shadow: 10px 31px 75px #000000;
+  -webkit-box-shadow: 10px 31px 75px #000000;
+  box-shadow: 10px 31px 75px #000000;
+}
+
+form {
+  padding: 15px 30px;
+}
+button.col-6 {
+  background-color: #009688;
+  border-radius: 0px;
+  border: 0px;
+  height: 50px;
+  margin: 0px;
+}
+.row {
+  padding: 0px;
+  margin: 0px;
+}
+
+#registerform {
+  display: none;
+}
+button.col-6.active {
+  background-color: #44b2a8;
+}
+
+h3 {
+  font-size: 40px;
+  color: #009688;
+  margin: 10px;
+}
+
+h4 {
+  font-size: 56px;
+  color: #009688;
+}
+
+/*  add footer and header in Chat page
+typo in scripts path in chat page 
+chanaged style sheet of chat page from master.css to chatpagedesign.css
+
+
+*/
