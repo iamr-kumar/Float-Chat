@@ -3,7 +3,7 @@ const app = express();
 const connectDb = require("./config/db");
 const socket = require("socket.io");
 const session = require("express-session");
-
+var flash = require("connect-flash");
 
 // Connect to db
 connectDb();
@@ -25,7 +25,12 @@ app.use(
 );
 
 app.set("view engine", "ejs");
-
+app.use(flash());
+app.use(function (req, res, next) {
+  res.locals.error = req.flash("error");
+  res.locals.success = req.flash("success");
+  next();
+});
 // Global variable to store active users
 global.users = [];
 
@@ -44,41 +49,39 @@ const io = socket(server);
 
 // Make sure that a user exists before making a connection
 io.use((socket, next) => {
-  if(socket.handshake.query.username) {
+  if (socket.handshake.query.username) {
     return next();
   }
-  return next(new Error('Authentication error!'));
+  return next(new Error("Authentication error!"));
 });
-
 
 // Establish connection
 io.on("connection", (socket) => {
   // console.log("Made new connection");
   const token = socket.handshake.query.username;
   // On disconnect, remove this user from active user's list
-  socket.on('disconnect', () => {
+  socket.on("disconnect", () => {
     const clientId = socket.id;
-    users = users.filter(user => user.id !== clientId);
+    users = users.filter((user) => user.id !== clientId);
   });
 
   // Add the user to active user's list
   users.push({
     id: socket.id,
-    name: token
+    name: token,
   });
 
   // Get message data from client, find the reciever's socket id, and emit to that specific id
-  socket.on('message', (data) => {
+  socket.on("message", (data) => {
     const reciever = data.to;
-    const recieverId = users.find(user => user.name === reciever);
+    const recieverId = users.find((user) => user.name === reciever);
     // console.log(recieverId);
-    io.to(recieverId.id).emit('message', data);
+    io.to(recieverId.id).emit("message", data);
   });
 
   // Broadcast new user to all users except the current user
-  socket.broadcast.emit('newUser', {
+  socket.broadcast.emit("newUser", {
     id: socket.id,
-    name: token
+    name: token,
   });
-
 });
