@@ -1,7 +1,5 @@
-import { KeyPairType } from '@virgilsecurity/e3kit-browser';
-
 const EThree = E3kit.EThree;
-
+ 
 class User {
     constructor(identity) {
         this.identity = identity;
