@@ -4,6 +4,11 @@
 <nav class="navbar navbar-light bg-light">
     <h1><span class="navbar-brand mb-0 h1">Float-Chat</span></h1>
   </nav>
+  <div class="container">
+    <% if(error && error.length > 0) {%>
+    <div class="alert alert-danger fade show alert1" role="alert"> <%= error %> </div>    
+        <%}%> 
+  </div>
 <div class="container-fluid">
     <div class="row">
 <div class="col-md-6 d-flex justify-content-center"> 
