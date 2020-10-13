@@ -110,17 +110,25 @@
                 <!-- -------it ha sbeen made seperate column to make it stick to the botton of the page 
             and not move -->
                 <div class="input_message">
-                    <input
-                        id="input_message"
-                        type="text"
-                        name="message"
-                        placeholder="Enter a Message to Send"
-                    />
-                    <button id="send_button">
-                        <img
-                            src="https://img.icons8.com/material-rounded/24/000000/filled-sent.png"
-                        />
-                    </button>
+                    <form action="" class="send-message">
+                        <div class="row">
+                            <div class="col-sm-11">
+                                <input
+                                    id="input_message"
+                                    type="text"
+                                    name="message"
+                                    placeholder="Enter a Message to Send"
+                                />
+                            </div>
+                            <div class="col-sm-1">
+                                <button type="submit" id="send_button">
+                                    <img
+                                        src="https://img.icons8.com/material-rounded/24/000000/filled-sent.png"
+                                    />
+                                </button>
+                            </div>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -141,117 +149,118 @@
         <!-- <script src="/js/chatpagelogic.js"></script> -->
         <script>
             $(document).ready( () => {
-              var thisUser = "<%=currentUser.username%>";
-              const users = "<%=users%>";
-              const sender = new User(thisUser);
-              let reciverLookup = null;
+                var thisUser = "<%=currentUser.username%>";
+                const users = "<%=users%>";
+                const sender = new User(thisUser);
+                let reciverLookup = null;
 
 
-              async function main() {
-                await sender.initialize(thisUser);
-                await sender.register();
-              }
-
-              main();
-
-              async function getKeys(reciever) {
-                return await sender.findUser([reciever]);      
-              }
-
-              // Initialize socket and make connection
-              const socket = io({
-                query: {
-                  username: thisUser,
-                },
-              });
-              var senderId;
-
-              socket.on("connect", () => {
-                senderId = socket.id;
-                // console.log(senderId);
-              });
-
-              // Append new user to list on a new connection
-              socket.on("newUser", (data) => {
-                if (data.name.trim() !== thisUser.trim()) {
-                  $("#chat_names_ul").append(
-                    `<li id="${data.name}" class="single-user">
-                      <div>
-                        <img src="https://ptetutorials.com/images/user-profile.png" class="user-image"/>
-                        <span class="chat_contacts"></span>
-                      </div>
-                      <div class="username">
-                        ${data.name}<br />
-                        <span>Start Chatting</span>
-                      </div>
-                      <hr />
-                    </li>`
-                  );
+                async function main() {
+                    await sender.initialize(thisUser);
+                    await sender.register();
                 }
-                // }
-              });
 
-              // Get reciver on clicking on a user from the active user's list
-              var reciever;
-              $("#chat_names_ul").on("click", "li", function() {
-                reciever = $(this).attr("id");
-                $("#chat_names_ul li").each(function(list) {
-                    $(this).removeClass("active"); // this first remove the css class from every contact
+                main();
+
+                async function getKeys(reciever) {
+                    return await sender.findUser([reciever]);      
+                }
+
+                // Initialize socket and make connection
+                const socket = io({
+                    query: {
+                    username: thisUser,
+                    },
                 });
-                $(this).addClass("active"); // this adds the css class to the active contact
-              //   console.log(reciever);
-                getKeys(reciever).then(user => {
-                    reciverLookup = user;
-                    console.log(user);
+                var senderId;
+
+                socket.on("connect", () => {
+                    senderId = socket.id;
+                    // console.log(senderId);
                 });
-              });
 
-              $("#send_button").on("click", () => {
-                // console.log("Message sent!");
-                sendMessage();
-              });
+                // Append new user to list on a new connection
+                socket.on("newUser", (data) => {
+                    if (data.name.trim() !== thisUser.trim()) {
+                    $("#chat_names_ul").append(
+                        `<li id="${data.name}" class="single-user">
+                        <div>
+                            <img src="https://ptetutorials.com/images/user-profile.png" class="user-image"/>
+                            <span class="chat_contacts"></span>
+                        </div>
+                        <div class="username">
+                            ${data.name}<br />
+                            <span>Start Chatting</span>
+                        </div>
+                        <hr />
+                        </li>`
+                    );
+                    }
+                    // }
+                });
 
-              // Emit a message event with message data as payload
-              const sendMessage = () => {
-                const data = $("#input_message").val();
-                var encryptedText;
-                $("#inpue_message").val("");
-                // console.log(data);
-                sender.authEncrypt(data, reciverLookup[reciever]).then(text => {
-                    encryptedText = text;
-                    console.log(encryptedText);
-                    socket.emit("message", {
-                      from: thisUser,
-                      to: reciever,
-                      msg: encryptedText,
+                // Get reciver on clicking on a user from the active user's list
+                var reciever;
+                $("#chat_names_ul").on("click", "li", function() {
+                    reciever = $(this).attr("id");
+                    $("#chat_names_ul li").each(function(list) {
+                        $(this).removeClass("active"); // this first remove the css class from every contact
+                    });
+                    $(this).addClass("active"); // this adds the css class to the active contact
+                //   console.log(reciever);
+                    getKeys(reciever).then(user => {
+                        reciverLookup = user;
+                        console.log(user);
                     });
                 });
-                $("#chat_window_ul").append(
-                  `<li class="user_message"><span>${data}</span></li>`
-                );
-              };
 
-            // On recieving a message from the server
-            socket.on("message", (data) => {
-                const from = data.from
-                console.log("Encypted message: " + data.msg);
-                var senderCard
-                getKeys(from).then(msgFrom => {
-                    senderCard = msgFrom;
-                    console.log(senderCard);
-                    var decryptedText;
-                    sender.authDecrypt(data.msg, senderCard[from]).then(text => {
-                        console.log(text);
-                        decryptedText = text;
-                        $("#chat_window_ul").append(
-                          `<li class="contact_message">
-                            <img src="https://ptetutorials.com/images/user-profile.png"/>
-                            <span>${decryptedText}</span>
-                          </li>`
-                        );
+                $(".send-message").on("submit", (event) => {
+                    // console.log("Message sent!");
+                    event.preventDefault();
+                    sendMessage();
+                });
+
+                // Emit a message event with message data as payload
+                const sendMessage = () => {
+                    const data = $("#input_message").val();
+                    var encryptedText;
+                    $("#inpue_message").val("");
+                    // console.log(data);
+                    sender.authEncrypt(data, reciverLookup[reciever]).then(text => {
+                        encryptedText = text;
+                        console.log(encryptedText);
+                        socket.emit("message", {
+                        from: thisUser,
+                        to: reciever,
+                        msg: encryptedText,
+                        });
+                    });
+                    $("#chat_window_ul").append(
+                    `<li class="user_message"><span>${data}</span></li>`
+                    );
+                };
+
+                // On recieving a message from the server
+                socket.on("message", (data) => {
+                    const from = data.from
+                    console.log("Encypted message: " + data.msg);
+                    var senderCard
+                    getKeys(from).then(msgFrom => {
+                        senderCard = msgFrom;
+                        console.log(senderCard);
+                        var decryptedText;
+                        sender.authDecrypt(data.msg, senderCard[from]).then(text => {
+                            console.log(text);
+                            decryptedText = text;
+                            $("#chat_window_ul").append(
+                            `<li class="contact_message">
+                                <img class="user-image" src="https://ptetutorials.com/images/user-profile.png"/>
+                                <span>${decryptedText}</span>
+                            </li>`
+                            );
+                        });
                     });
                 });
-              });
             });
 
 
