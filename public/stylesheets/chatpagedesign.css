@@ -33,7 +33,6 @@ body {
 /* ==============Stying of the 1st Column   the Chat List  */
 
 #chat_names {
-<<<<<<< HEAD
   position: absolute;
   top: 76px;
   bottom: 0px;
@@ -42,17 +41,6 @@ body {
   overflow-y: scroll;
   background-color: #343b4a;
   color: white;
-=======
-    position: absolute;
-    top: 76px;
-    bottom: 0px;
-    left: 0px;
-    width: 36%;
-    overflow-y: scroll;
-    background-color: #343B4A;
-    color: white;
-    padding: 0;
->>>>>>> master
 }
 
 #chat_text {
@@ -66,15 +54,8 @@ body {
 }
 
 #chat_names_ul {
-<<<<<<< HEAD
   font-size: x-large;
   margin-top: 1rem;
-=======
-    font-size: x-large;
-    /* margin-top: 1rem; */
-    padding: 0;
-    width: 100%;
->>>>>>> master
 }
 
 ul {
@@ -82,8 +63,8 @@ ul {
 }
 
 #chat_names_ul li {
-    padding: 20px;
-    width: 100%;
+  padding: 20px;
+  width: 100%;
 }
 
 #chat_names_ul li:hover {
@@ -131,7 +112,7 @@ hr {
 }
 
 .chat_window li {
-    margin: 1rem 0;
+  margin: 1rem 0;
 }
 
 .chat_window .contact_message {
@@ -170,7 +151,6 @@ hr {
 }
 
 .input_message input {
-<<<<<<< HEAD
   width: 90%;
   height: 40px;
 }
@@ -182,16 +162,3 @@ hr {
   border-radius: 50%;
   margin-left: 30px;
 }
-=======
-    width: 100%;
-    height: 40px;
-}
-
-.input_message button {
-    height: 50px;
-    background-color: #0b7df6;
-    border-radius: 50%;
-    /* margin-left: 30px; */
-}
-
->>>>>>> master
