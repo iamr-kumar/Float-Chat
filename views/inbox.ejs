@@ -195,7 +195,7 @@
                 const sendMessage = () => {
                     const data = $("#input_message").val();
                     var encryptedText;
-                    $("#inpue_message").val("");
+                    $("#input_message").val("");
                     // console.log(data);
                     sender.authEncrypt(data, reciverLookup[reciever]).then(text => {
                         encryptedText = text;
