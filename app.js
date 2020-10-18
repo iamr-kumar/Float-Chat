@@ -3,6 +3,7 @@ const app = express();
 const connectDb = require("./config/db");
 const socket = require("socket.io");
 const session = require("express-session");
+const flash = require("connect-flash");
 
 // Connect to db
 connectDb();
@@ -22,6 +23,11 @@ app.use(
         resave: false,
     })
 );
+app.use(flash());
+app.use((req, res, next) => {
+    res.locals.error = req.flash("error"); 
+    next();
+});
 
 app.set("view engine", "ejs");
 

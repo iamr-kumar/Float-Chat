@@ -9,7 +9,7 @@ class User {
     async initialize(identity) {
         // Get virgil token from the api
         async function getVrigilToken() {
-            const response = await fetch("http://localhost:3000/virgil-jwt", {
+            const response = await fetch(`${window.location.origin}/virgil-jwt`, {
                 headers: {
                     Authorization: `Bearer ${identity}`,
                 },

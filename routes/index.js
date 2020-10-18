@@ -5,43 +5,52 @@ const bcrypt = require("bcrypt");
 const { check, validationResult } = require("express-validator");
 const { generateVirgilJwt } = require("../api/virgilToken");
 const flash = require("connect-flash");
+const auth = require("../middleware/auth");
 
 router.get("/", function (req, res) {
-  res.render("home");
+    res.render("home");
 });
 router.get("/login", (req, res) => {
-  res.redirect("/");
+    res.redirect("/");
 });
 
-router.post("/login", [check("username", "Username is required").exists(), check("password", "Password is required").exists()], async (req, res) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.render("home", { errors: errors.array() });
-  }
-  const { username, password } = req.body;
-  try {
-    const user = await User.findOne({ username });
-    if (!user) {
-      req.flash("error", "Invalid Credentials");
-      res.redirect("/");
-      // return res.status(400).json({ errors: { msg: "Invalid credentials!" } });
+router.post(
+    "/login",
+    [
+        check("username", "Username is required").exists(),
+        check("password", "Password is required").exists(),
+    ],
+    async (req, res) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            req.flash("error", "Inavlid Credentials!");
+            return res.redirect("/");
+        }
+        const { username, password } = req.body;
+        try {
+            const user = await User.findOne({ username });
+            if (!user) {
+                req.flash("error", "Invalid Credentials");
+                res.redirect("/");
+                // return res.status(400).json({ errors: { msg: "Invalid credentials!" } });
+            }
+            const isMatched = await bcrypt.compare(password, user.password);
+            if (!isMatched) {
+                req.flash("error", "Invalid Credentials");
+                res.redirect("/");
+                // return res.status(400).json({ errors: { msg: "Invalid credentials!" } });
+            } else {
+                req.session.currentUser = user;
+                res.redirect("/inbox");
+            }
+        } catch (err) {
+            console.log(err.message);
+            req.flash("error", "Server Error!!");
+            res.redirect("/");
+            // res.status(500).send("Server error!");
+        }
     }
-    const isMatched = await bcrypt.compare(password, user.password);
-    if (!isMatched) {
-      req.flash("error", "Invalid Credentials");
-      res.redirect("/");
-      // return res.status(400).json({ errors: { msg: "Invalid credentials!" } });
-    } else {
-      req.session.currentUser = user;
-      res.redirect("/inbox");
-    }
-  } catch (err) {
-    console.log(err.message);
-    req.flash("error", "Server Error!!");
-    res.redirect("/");
-    // res.status(500).send("Server error!");
-  }
-});
+);
 
 router.get("/logout", (req, res) => {
     req.session.currentUser = null;
@@ -52,8 +61,8 @@ router.get("/logout", (req, res) => {
 
 router.get("/virgil-jwt", generateVirgilJwt);
 
-router.get("/inbox", (req, res) => {
-  res.render("inbox", { currentUser: req.session.currentUser, users });
+router.get("/inbox", auth, (req, res) => {
+    res.render("inbox", { currentUser: req.session.currentUser, users });
 });
 
 module.exports = router;
