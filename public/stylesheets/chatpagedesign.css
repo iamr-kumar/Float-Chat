@@ -30,6 +30,17 @@ body {
   color: white;
 }
 
+.logout a {
+    text-decoration: none;
+    color: #fff;
+    transition: 0.2s ease;
+}
+
+.logout a:hover {
+    color: rgb(223, 223, 223);
+    text-decoration: none;
+}
+
 /* ==============Stying of the 1st Column   the Chat List  */
 
 #chat_names {

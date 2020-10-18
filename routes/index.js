@@ -43,6 +43,11 @@ router.post("/login", [check("username", "Username is required").exists(), check
   }
 });
 
+router.get("/logout", (req, res) => {
+    req.session.currentUser = null;
+    res.redirect("/");
+});
+
 // const generatorPromise = getJwtGenerator();
 
 router.get("/virgil-jwt", generateVirgilJwt);
