@@ -63,6 +63,10 @@ io.on("connect", (socket) => {
     socket.on("disconnect", () => {
         const clientId = socket.id;
         users = users.filter((user) => user.id !== clientId);
+        socket.broadcast.emit("removeUser", {
+            id: socket.id,
+            name: token
+        });
         //
     });
 

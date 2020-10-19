@@ -240,6 +240,12 @@
                         });
                     }
                 });
+
+                // Remove user from list on disconnect
+                socket.on("removeUser", (data) => {
+                    $(`#${data.name}`).remove();
+                })
+
             });
 
 
