@@ -52,7 +52,7 @@
                             </div>
                             <div class="username">
                                 <%= user.name %><br />
-                                <span>Start Chatting</span>
+                                <span class="chat-text">Start Chatting</span>
                             </div>
                             <hr />
                         </li>
@@ -69,9 +69,9 @@
                         <hr />
                         <ul id="chat_window_ul">
                             <!-- <li class="contact_message">
-                <img src="https://ptetutorials.com/images/user-profile.png"/>
-                <span>${data.msg}</span>
-              </li> -->
+                                <img src="https://ptetutorials.com/images/user-profile.png"/>
+                                <span>${data.msg}</span>
+                            </li> -->
                         </ul>
                     </div>
                 </div>
@@ -79,7 +79,7 @@
 
                 <!-- =================Column Three for Typing Test and Sending it========== -->
                 <!-- -------it ha sbeen made seperate column to make it stick to the botton of the page 
-            and not move -->
+                and not move -->
                 <div class="input_message">
                     <form action="" class="send-message">
                         <div class="row">
@@ -123,7 +123,7 @@
                 var thisUser = "<%=currentUser.username%>";
                 const users = "<%=users%>";
                 const sender = new User(thisUser);
-                let reciverLookup = null;
+                let recieverLookup = null;
 
 
                 async function main() {
@@ -171,23 +171,32 @@
                 });
 
                 // Get reciver on clicking on a user from the active user's list
-                var reciever;
+                var reciever = null;
                 $("#chat_names_ul").on("click", "li", function() {
-                    reciever = $(this).attr("id");
-                    $("#chat_names_ul li").each(function(list) {
-                        $(this).removeClass("active"); // this first remove the css class from every contact
-                    });
-                    $(this).addClass("active"); // this adds the css class to the active contact
-                //   console.log(reciever);
-                    getKeys(reciever).then(user => {
-                        reciverLookup = user;
-                        console.log(user);
-                    });
+                    if($(this).attr("id") !== reciever) {
+                        reciever = $(this).attr("id");
+                        $("#chat_window_ul").html("");
+                        $("#chat_names_ul li").each(function(list) {
+                            $(this).removeClass("active"); // this first remove the css class from every contact
+                            $(this).find(".chat-text").html("Start Chatting");
+                        });
+                        $(this).addClass("active"); // this adds the css class to the active contact
+                        //   console.log(reciever);
+                        $(this).find(".chat-text").html("Chatting...");
+                        getKeys(reciever).then(user => {
+                            recieverLookup = user;
+                            console.log(user);
+                        });
+                    }
+
                 });
 
                 $(".send-message").on("submit", (event) => {
                     // console.log("Message sent!");
                     event.preventDefault();
+                    if(!reciever) {
+                        return alert("Please select a user to send a message to!");
+                    }
                     sendMessage();
                 });
 
@@ -197,7 +206,7 @@
                     var encryptedText;
                     $("#input_message").val("");
                     // console.log(data);
-                    sender.authEncrypt(data, reciverLookup[reciever]).then(text => {
+                    sender.authEncrypt(data, recieverLookup[reciever]).then(text => {
                         encryptedText = text;
                         console.log(encryptedText);
                         socket.emit("message", {
@@ -213,16 +222,15 @@
 
                 // On recieving a message from the server
                 socket.on("message", (data) => {
-                    const from = data.from
-                    console.log("Encypted message: " + data.msg);
-                    var senderCard
-                    getKeys(from).then(msgFrom => {
-                        senderCard = msgFrom;
-                        console.log(senderCard);
-                        var decryptedText;
-                        sender.authDecrypt(data.msg, senderCard[from]).then(text => {
+                    if(data.from !== reciever) {
+                        alert(`${data.from} is trying to send you a message.`);                       
+                    }
+                    else {
+                        console.log("Encypted message: " + data.msg);
+                        // console.log(recieverLookup);
+                        sender.authDecrypt(data.msg, recieverLookup[reciever]).then(text => {
                             console.log(text);
-                            decryptedText = text;
+                            const decryptedText = text;
                             $("#chat_window_ul").append(
                             `<li class="contact_message">
                                 <img class="user-image" src="https://ptetutorials.com/images/user-profile.png"/>
@@ -230,7 +238,7 @@
                             </li>`
                             );
                         });
-                    });
+                    }
                 });
             });
 
