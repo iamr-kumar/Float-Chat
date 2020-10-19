@@ -244,6 +244,10 @@
                 // Remove user from list on disconnect
                 socket.on("removeUser", (data) => {
                     $(`#${data.name}`).remove();
+                    if(data.name === reciever) {
+                        alert(`${data.name} has left!`);
+                        $("#chat_window_ul").html("");
+                    }
                 })
 
             });
