@@ -153,19 +153,27 @@
                 // Append new user to list on a new connection
                 socket.on("newUser", (data) => {
                     if (data.name.trim() !== thisUser.trim()) {
-                    $("#chat_names_ul").append(
-                        `<li id="${data.name}" class="single-user">
-                        <div>
-                            <img src="https://ptetutorials.com/images/user-profile.png" class="user-image"/>
-                            <span class="chat_contacts"></span>
-                        </div>
-                        <div class="username">
-                            ${data.name}<br />
-                            <span>Start Chatting</span>
-                        </div>
-                        <hr />
-                        </li>`
-                    );
+                        let flag = false;
+                        $("#chat_names_ul li").each(() => {
+                            if($(this).attr("id") === data.name.trim()) {
+                                flag = true;
+                            }
+                        });
+                        if(!flag) {
+                            $("#chat_names_ul").append(
+                                `<li id="${data.name}" class="single-user">
+                                <div>
+                                    <img src="https://ptetutorials.com/images/user-profile.png" class="user-image"/>
+                                    <span class="chat_contacts"></span>
+                                </div>
+                                <div class="username">
+                                    ${data.name}<br />
+                                    <span>Start Chatting</span>
+                                </div>
+                                <hr />
+                                </li>`
+                            );
+                        }
                     }
                     // }
                 });

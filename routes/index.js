@@ -31,13 +31,13 @@ router.post(
             const user = await User.findOne({ username });
             if (!user) {
                 req.flash("error", "Invalid Credentials");
-                res.redirect("/");
+                return res.redirect("/");
                 // return res.status(400).json({ errors: { msg: "Invalid credentials!" } });
             }
             const isMatched = await bcrypt.compare(password, user.password);
             if (!isMatched) {
                 req.flash("error", "Invalid Credentials");
-                res.redirect("/");
+                return res.redirect("/");
                 // return res.status(400).json({ errors: { msg: "Invalid credentials!" } });
             } else {
                 req.session.currentUser = user;
