@@ -23,145 +23,145 @@
       <div class="">
         <img src="https://img.icons8.com/bubbles/50/000000/user-male.png" />
         <%=currentUser.username %>
-    </div>
-    <a class="navbar-brand">Float Chat</a>
-    <div class="logout"> <a href="/logout">Logout</a> </div>
+      </div>
+      <a class="navbar-brand">Float Chat</a>
+      <div class="logout"><a href="/logout">Logout</a></div>
       <!-- <a class="navbar-brand" href="#" id="main_user">
 =======
 
         </a> -->
-        </nav>
+    </nav>
 
-        <!-- ===================Main Body ====================-->
-        <!-- Three Column Layout -->
-        <div class="container-fluid">
-            <div class="row">
-                <!-- ==================Column One For Chat names ============= -->
-                <!-- Ejs Format  -->
-                <!-- Use "users" as object passed from node -->
-                <div class="col-4" id="chat_names">
-                    <ul id="chat_names_ul">
-                        <% users.forEach(function (user){ %> <% if(user.name !== currentUser.username) { %>
-                        <li id="<%=user.name %>" class="single-user">
-                            <div>
-                                <img
-                                    src="https://ptetutorials.com/images/user-profile.png"
-                                    class="user-image"
-                                />
-                                <span class="chat_contacts"></span>
-                            </div>
-                            <div class="username">
-                                <%= user.name %><br />
-                                <span class="chat-text">Start Chatting</span>
-                            </div>
-                            <hr />
-                        </li>
-                        <% }}); %>
-                    </ul>
-                </div>
-                <!-- Column One Ends -->
+    <!-- ===================Main Body ====================-->
+    <!-- Three Column Layout -->
+    <div class="container-fluid">
+      <div class="row">
+        <!-- ==================Column One For Chat names ============= -->
+        <!-- Ejs Format  -->
+        <!-- Use "users" as object passed from node -->
+        <div class="col-4" id="chat_names">
+          <ul id="chat_names_ul">
+            <% users.forEach(function (user){ %> <% if(user.name !==
+            currentUser.username) { %>
+            <li id="<%=user.name %>" class="single-user">
+              <div>
+                <img
+                  src="https://ptetutorials.com/images/user-profile.png"
+                  class="user-image"
+                />
+                <span class="chat_contacts"></span>
+              </div>
+              <div class="username">
+                <%= user.name %><br />
+                <span class="chat-text">Start Chatting</span>
+              </div>
+              <hr />
+            </li>
+            <% }}); %>
+          </ul>
+        </div>
+        <!-- Column One Ends -->
 
-                <!-- ==========Column Two For Chats (Chat Window) =============== -->
-                <div class="col-8" id="chat_text">
-                    <div class="chat_window">
-                        <!-- Hr Just for fun -->
-                        <!-- -----------this past is made by javascript on the clients side----------- -->
-                        <hr />
-                        <ul id="chat_window_ul">
-                            <!-- <li class="contact_message">
+        <!-- ==========Column Two For Chats (Chat Window) =============== -->
+        <div class="col-8" id="chat_text">
+          <div class="chat_window">
+            <!-- Hr Just for fun -->
+            <!-- -----------this past is made by javascript on the clients side----------- -->
+            <hr />
+            <ul id="chat_window_ul">
+              <!-- <li class="contact_message">
                                 <img src="https://ptetutorials.com/images/user-profile.png"/>
                                 <span>${data.msg}</span>
                             </li> -->
-                        </ul>
-                    </div>
-                </div>
-                <!-- Column 2 Ends -->
-
-                <!-- =================Column Three for Typing Test and Sending it========== -->
-                <!-- -------it ha sbeen made seperate column to make it stick to the botton of the page 
-                and not move -->
-                <div class="input_message">
-                    <form action="" class="send-message">
-                        <div class="row">
-                            <div class="col-sm-11">
-                                <input
-                                    id="input_message"
-                                    type="text"
-                                    name="message"
-                                    placeholder="Enter a Message to Send"
-                                />
-                            </div>
-                            <div class="col-sm-1">
-                                <button type="submit" id="send_button">
-                                    <img
-                                        src="https://img.icons8.com/material-rounded/24/000000/filled-sent.png"
-                                    />
-                                </button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
+            </ul>
+          </div>
         </div>
+        <!-- Column 2 Ends -->
 
-        <script
-            src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
-            integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
-            crossorigin="anonymous"
-        ></script>
-        <script
-            src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
-            integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
-            crossorigin="anonymous"
-        ></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
-        <script src="https://unpkg.com/@virgilsecurity/e3kit-browser@^2.3.3/dist/browser.umd.js"></script>
-        <script type="text/javascript" src="/js/user.js"></script>
-        <!-- <script src="/js/chatpagelogic.js"></script> -->
-        <script>
-            $(document).ready( () => {
-                var thisUser = "<%=currentUser.username%>";
-                const users = "<%=users%>";
-                const sender = new User(thisUser);
-                let recieverLookup = null;
+        <!-- =================Column Three for Typing Test and Sending it========== -->
+        <!-- -------it ha sbeen made seperate column to make it stick to the botton of the page 
+                and not move -->
+        <div class="input_message">
+          <form action="" class="send-message">
+            <div class="row">
+              <div class="col-sm-11">
+                <input
+                  id="input_message"
+                  type="text"
+                  name="message"
+                  placeholder="Enter a Message to Send"
+                />
+              </div>
+              <div class="col-sm-1">
+                <button type="submit" id="send_button">
+                  <img
+                    src="https://img.icons8.com/material-rounded/24/000000/filled-sent.png"
+                  />
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
 
+    <script
+      src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+      integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
+      integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
+      crossorigin="anonymous"
+    ></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
+    <script src="https://unpkg.com/@virgilsecurity/e3kit-browser@^2.3.3/dist/browser.umd.js"></script>
+    <script type="text/javascript" src="/js/user.js"></script>
+    <!-- <script src="/js/chatpagelogic.js"></script> -->
+    <script>
+      $(document).ready(() => {
+        var thisUser = "<%=currentUser.username%>";
+        const users = "<%=users%>";
+        const sender = new User(thisUser);
+        let recieverLookup = null;
 
-                async function main() {
-                    await sender.initialize(thisUser);
-                    await sender.register();
-                }
+        async function main() {
+          await sender.initialize(thisUser);
+          await sender.register();
+        }
 
-                main();
+        main();
 
-                async function getKeys(reciever) {
-                    return await sender.findUser([reciever]);      
-                }
+        async function getKeys(reciever) {
+          return await sender.findUser([reciever]);
+        }
 
-                // Initialize socket and make connection
-                const socket = io({
-                    query: {
-                    username: thisUser,
-                    },
-                });
-                var senderId;
+        // Initialize socket and make connection
+        const socket = io({
+          query: {
+            username: thisUser,
+          },
+        });
+        var senderId;
 
-                socket.on("connect", () => {
-                    senderId = socket.id;
-                    // console.log(senderId);
-                });
+        socket.on("connect", () => {
+          senderId = socket.id;
+          // console.log(senderId);
+        });
 
-                // Append new user to list on a new connection
-                socket.on("newUser", (data) => {
-                    if (data.name.trim() !== thisUser.trim()) {
-                        let flag = false;
-                        $("#chat_names_ul li").each(() => {
-                            if($(this).attr("id") === data.name.trim()) {
-                                flag = true;
-                            }
-                        });
-                        if(!flag) {
-                            $("#chat_names_ul").append(
-                                `<li id="${data.name}" class="single-user">
+        // Append new user to list on a new connection
+        socket.on("newUser", (data) => {
+          if (data.name.trim() !== thisUser.trim()) {
+            let flag = false;
+            $("#chat_names_ul li").each(() => {
+              if ($(this).attr("id") === data.name.trim()) {
+                flag = true;
+              }
+            });
+            if (!flag) {
+              $("#chat_names_ul").append(
+                `<li id="${data.name}" class="single-user">
                                 <div>
                                     <img src="https://ptetutorials.com/images/user-profile.png" class="user-image"/>
                                     <span class="chat_contacts"></span>
@@ -172,95 +172,92 @@
                                 </div>
                                 <hr />
                                 </li>`
-                            );
-                        }
-                    }
-                    // }
-                });
+              );
+            }
+          }
+          // }
+        });
 
-                // Get reciver on clicking on a user from the active user's list
-                var reciever = null;
-                $("#chat_names_ul").on("click", "li", function() {
-                    if($(this).attr("id") !== reciever) {
-                        reciever = $(this).attr("id");
-                        $("#chat_window_ul").html("");
-                        $("#chat_names_ul li").each(function(list) {
-                            $(this).removeClass("active"); // this first remove the css class from every contact
-                            $(this).find(".chat-text").html("Start Chatting");
-                        });
-                        $(this).addClass("active"); // this adds the css class to the active contact
-                        //   console.log(reciever);
-                        $(this).find(".chat-text").html("Chatting...");
-                        getKeys(reciever).then(user => {
-                            recieverLookup = user;
-                            console.log(user);
-                        });
-                    }
+        // Get reciver on clicking on a user from the active user's list
+        var reciever = null;
+        $("#chat_names_ul").on("click", "li", function () {
+          if ($(this).attr("id") !== reciever) {
+            reciever = $(this).attr("id");
+            $("#chat_window_ul").html("");
+            $("#chat_names_ul li").each(function (list) {
+              $(this).removeClass("active"); // this first remove the css class from every contact
+              $(this).find(".chat-text").html("Start Chatting");
+            });
+            $(this).addClass("active"); // this adds the css class to the active contact
+            //   console.log(reciever);
+            $(this).find(".chat-text").html("Chatting...");
+            getKeys(reciever).then((user) => {
+              recieverLookup = user;
+              console.log(user);
+            });
+          }
+        });
 
-                });
+        $(".send-message").on("submit", (event) => {
+          // console.log("Message sent!");
+          event.preventDefault();
+          if (!reciever) {
+            return alert("Please select a user to send a message to!");
+          }
+          sendMessage();
+        });
 
-                $(".send-message").on("submit", (event) => {
-                    // console.log("Message sent!");
-                    event.preventDefault();
-                    if(!reciever) {
-                        return alert("Please select a user to send a message to!");
-                    }
-                    sendMessage();
-                });
+        // Emit a message event with message data as payload
+        const sendMessage = () => {
+          const data = $("#input_message").val();
+          var encryptedText;
+          $("#input_message").val("");
+          // console.log(data);
+          sender.authEncrypt(data, recieverLookup[reciever]).then((text) => {
+            encryptedText = text;
+            console.log(encryptedText);
+            socket.emit("message", {
+              from: thisUser,
+              to: reciever,
+              msg: encryptedText,
+            });
+          });
+          $("#chat_window_ul").append(
+            `<li class="user_message"><span>${data}</span></li>`
+          );
+        };
 
-                // Emit a message event with message data as payload
-                const sendMessage = () => {
-                    const data = $("#input_message").val();
-                    var encryptedText;
-                    $("#input_message").val("");
-                    // console.log(data);
-                    sender.authEncrypt(data, recieverLookup[reciever]).then(text => {
-                        encryptedText = text;
-                        console.log(encryptedText);
-                        socket.emit("message", {
-                        from: thisUser,
-                        to: reciever,
-                        msg: encryptedText,
-                        });
-                    });
-                    $("#chat_window_ul").append(
-                    `<li class="user_message"><span>${data}</span></li>`
-                    );
-                };
-
-                // On recieving a message from the server
-                socket.on("message", (data) => {
-                    if(data.from !== reciever) {
-                        alert(`${data.from} is trying to send you a message.`);                       
-                    }
-                    else {
-                        console.log("Encypted message: " + data.msg);
-                        // console.log(recieverLookup);
-                        sender.authDecrypt(data.msg, recieverLookup[reciever]).then(text => {
-                            console.log(text);
-                            const decryptedText = text;
-                            $("#chat_window_ul").append(
-                            `<li class="contact_message">
+        // On recieving a message from the server
+        socket.on("message", (data) => {
+          if (data.from !== reciever) {
+            alert(`${data.from} is trying to send you a message.`);
+          } else {
+            console.log("Encypted message: " + data.msg);
+            // console.log(recieverLookup);
+            sender
+              .authDecrypt(data.msg, recieverLookup[reciever])
+              .then((text) => {
+                console.log(text);
+                const decryptedText = text;
+                $("#chat_window_ul").append(
+                  `<li class="contact_message">
                                 <img class="user-image" src="https://ptetutorials.com/images/user-profile.png"/>
                                 <span>${decryptedText}</span>
                             </li>`
-                            );
-                        });
-                    }
-                });
+                );
+              });
+          }
+        });
 
-                // Remove user from list on disconnect
-                socket.on("removeUser", (data) => {
-                    $(`#${data.name}`).remove();
-                    if(data.name === reciever) {
-                        alert(`${data.name} has left!`);
-                        $("#chat_window_ul").html("");
-                    }
-                })
-
-            });
-
-
-        </script>
-    </body>
+        // Remove user from list on disconnect
+        socket.on("removeUser", (data) => {
+          $(`#${data.name}`).remove();
+          if (data.name === reciever) {
+            alert(`${data.name} has left!`);
+            $("#chat_window_ul").html("");
+          }
+        });
+      });
+    </script>
+  </body>
 </html>
