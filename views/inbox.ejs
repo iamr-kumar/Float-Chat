@@ -28,7 +28,6 @@
       <div class="logout"><a href="/logout">Logout</a></div>
       <!-- <a class="navbar-brand" href="#" id="main_user">
 =======
-
         </a> -->
     </nav>
 
@@ -105,11 +104,7 @@
       </div>
     </div>
 
-    <script
-      src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
-      integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
-      crossorigin="anonymous"
-    ></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script
       src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
       integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
@@ -125,18 +120,14 @@
         const users = "<%=users%>";
         const sender = new User(thisUser);
         let recieverLookup = null;
-
         async function main() {
           await sender.initialize(thisUser);
           await sender.register();
         }
-
         main();
-
         async function getKeys(reciever) {
           return await sender.findUser([reciever]);
         }
-
         // Initialize socket and make connection
         const socket = io({
           query: {
@@ -144,12 +135,10 @@
           },
         });
         var senderId;
-
         socket.on("connect", () => {
           senderId = socket.id;
           // console.log(senderId);
         });
-
         // Append new user to list on a new connection
         socket.on("newUser", (data) => {
           if (data.name.trim() !== thisUser.trim()) {
@@ -177,7 +166,6 @@
           }
           // }
         });
-
         // Get reciver on clicking on a user from the active user's list
         var reciever = null;
         $("#chat_names_ul").on("click", "li", function () {
@@ -197,7 +185,6 @@
             });
           }
         });
-
         $(".send-message").on("submit", (event) => {
           // console.log("Message sent!");
           event.preventDefault();
@@ -206,7 +193,6 @@
           }
           sendMessage();
         });
-
         // Emit a message event with message data as payload
         const sendMessage = () => {
           const data = $("#input_message").val();
@@ -226,7 +212,6 @@
             `<li class="user_message"><span>${data}</span></li>`
           );
         };
-
         // On recieving a message from the server
         socket.on("message", (data) => {
           if (data.from !== reciever) {
@@ -248,7 +233,6 @@
               });
           }
         });
-
         // Remove user from list on disconnect
         socket.on("removeUser", (data) => {
           $(`#${data.name}`).remove();
