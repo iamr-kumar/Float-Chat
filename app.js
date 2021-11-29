@@ -4,6 +4,13 @@ const connectDb = require("./config/db");
 const socket = require("socket.io");
 const session = require("express-session");
 const flash = require("connect-flash");
+const {
+  addUser,
+  removeUser,
+  findConnectedUser,
+  loadChatHistory,
+} = require("./utils/roomAction");
+const { loadMessages, sendMessage } = require("./utils/messageAction");
 
 // Connect to db
 connectDb();
@@ -56,36 +63,59 @@ io.use((socket, next) => {
 });
 
 // Establish connection
-io.on("connect", (socket) => {
-  // console.log("Made new connection");
-  const token = socket.handshake.query.username;
-  // On disconnect, remove this user from active user's list
-  socket.on("disconnect", () => {
-    const clientId = socket.id;
-    users = users.filter((user) => user.id !== clientId);
+io.on("connection", (socket) => {
+  const username = socket.handshake.query.username;
+
+  socket.on("join", async ({ userId }) => {
+    const users = await addUser(userId, socket.id);
+    console.log(users);
+    const { chats, err } = await loadChatHistory(userId);
+    if (chats) {
+      io.emit("loadChatHistory", { chats });
+    } else {
+      console.log(err);
+      io.emit("errorLoadingChatHistory", { err });
+    }
+    setInterval(() => {
+      io.emit("connectedUsers", {
+        users: users.filter((user) => user.userId !== userId),
+      });
+    }, 10000);
+  });
+
+  socket.on("loadMessages", async ({ userId, messageWith }) => {
+    const { chats, user } = await loadMessages(userId, messageWith);
+    if (!user) {
+      socket.emit("messagesLoaded", { chats });
+    } else {
+      console.log(user);
+      socket.emit("noChatFound", { user });
+    }
+  });
+
+  socket.on("sendMessage", async ({ userId, messageTo, text }) => {
+    console.log(userId, messageTo, text);
+    const { error, newMessage } = await sendMessage(userId, messageTo, text);
+    const receiverSocket = findConnectedUser(messageTo);
+
+    if (receiverSocket) {
+      io.to(receiverSocket.socketId).emit("newMessage", { newMessage });
+    }
+    if (!error) {
+      socket.emit("messageSent", { newMessage });
+    }
+  });
+
+  socket.on("disconnect", async () => {
+    await removeUser(username);
     socket.broadcast.emit("removeUser", {
       id: socket.id,
-      name: token,
+      name: username,
     });
-    //
   });
 
-  // Add the user to active user's list
-  users.push({
-    id: socket.id,
-    name: token,
-  });
-  // Get message data from client, find the reciever's socket id, and emit to that specific id
-  socket.on("message", (data) => {
-    const reciever = data.to;
-    const recieverId = users.find((user) => user.name === reciever);
-    // console.log(recieverId);
-    io.to(recieverId.id).emit("message", data);
-  });
-
-  // Broadcast new user to all users except the current user
   socket.broadcast.emit("newUser", {
     id: socket.id,
-    name: token,
+    name: username,
   });
 });

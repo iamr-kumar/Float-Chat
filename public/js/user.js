@@ -49,9 +49,9 @@ class User {
       console.log("Registered!");
     } catch (err) {
       if (err.name === "IdentityAlreadyExistsError") {
-        await eThree.cleanup();
-        await eThree.rotatePrivateKey();
-        console.log("Rotated private key instead!");
+        // await eThree.cleanup();
+        // await eThree.rotatePrivateKey();
+        console.log("User already exists!");
       } else {
         console.log("Failed to initialize");
       }

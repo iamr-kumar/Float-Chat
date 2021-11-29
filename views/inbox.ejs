@@ -40,8 +40,8 @@
         <!-- Use "users" as object passed from node -->
         <div class="col-4" id="chat_names">
           <ul id="chat_names_ul">
-            <% users.forEach(function (user){ %> <% if(user.name !==
-            currentUser.username) { %>
+            <% users.forEach(function (user){ %> <% if(user.name
+            !==currentUser.username) { %>
             <li id="<%=user.name %>" class="single-user">
               <div>
                 <img
@@ -116,61 +116,83 @@
     <!-- <script src="/js/chatpagelogic.js"></script> -->
     <script>
       $(document).ready(() => {
-        var thisUser = "<%=currentUser.username%>";
-        const users = "<%=users%>";
+        const thisUser = "<%=currentUser.username%>";
+        const userId = "<%=currentUser._id%>";
+
         const sender = new User(thisUser);
         let recieverLookup = null;
-        async function main() {
-          await sender.initialize(thisUser);
-          await sender.register();
-        }
-        main();
+        let senderLookup = null;
         async function getKeys(reciever) {
           return await sender.findUser([reciever]);
         }
+        async function main() {
+          await sender.initialize(thisUser);
+          await sender.register();
+          senderLookup = await getKeys(thisUser);
+        }
+        main();
+
         // Initialize socket and make connection
-        const socket = io({
-          query: {
-            username: thisUser,
-          },
-        });
-        var senderId;
-        socket.on("connect", () => {
-          senderId = socket.id;
-          // console.log(senderId);
-        });
-        // Append new user to list on a new connection
-        socket.on("newUser", (data) => {
-          if (data.name.trim() !== thisUser.trim()) {
+
+        function addUserToList(name) {
+          if (name.trim() !== thisUser.trim()) {
             let flag = false;
-            $("#chat_names_ul li").each(() => {
-              if ($(this).attr("id") === data.name.trim()) {
+            const listItems = $("#chat_names_ul li");
+
+            listItems.each((index, element) => {
+              if ($(element).attr("id") === name.trim()) {
                 flag = true;
               }
             });
             if (!flag) {
               $("#chat_names_ul").append(
-                `<li id="${data.name}" class="single-user">
-                                <div>
-                                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSwmDUeKI2SbaMIad13ZOpQvh8NdOALcMjrcJepUFVwUHWottKJi68D26LPiotJ1VtCqgM&usqp=CAU" class="user-image"/>
-                                    <span class="chat_contacts"></span>
-                                </div>
-                                <div class="username">
-                                    ${data.name}<br />
-                                    <span>Start Chatting</span>
-                                </div>
-                                <hr />
-                                </li>`
+                `<li id="${name}" class="single-user">
+                  <div>
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSwmDUeKI2SbaMIad13ZOpQvh8NdOALcMjrcJepUFVwUHWottKJi68D26LPiotJ1VtCqgM&usqp=CAU" class="user-image"/>
+                    <span class="chat_contacts"></span>
+                  </div>
+                  <div class="username">
+                    ${name}<br />
+                    <span>Start Chatting</span>
+                  </div>
+                  <hr />
+                </li>`
               );
             }
           }
+        }
+        const socket = io({
+          query: {
+            username: thisUser,
+          },
+        });
+
+        var senderId;
+        socket.emit("join", { userId: thisUser });
+        // Append new user to list on a new connectionZ
+        socket.on("newUser", (data) => {
+          addUserToList(data.name);
           // }
         });
+        socket.on("connectedUsers", ({ users }) => {
+          users.forEach((user) => {
+            addUserToList(user.userId);
+          });
+        });
+
+        socket.on("loadChatHistory", ({ chats }) => {
+          chats.forEach((chat) => {
+            addUserToList(chat.messageWith.username);
+          });
+        });
+
         // Get reciver on clicking on a user from the active user's list
         var reciever = null;
-        $("#chat_names_ul").on("click", "li", function () {
+
+        $("#chat_names_ul").on("click", "li", async function () {
           if ($(this).attr("id") !== reciever) {
             reciever = $(this).attr("id");
+
             $("#chat_window_ul").html("");
             $("#chat_names_ul li").each(function (list) {
               $(this).removeClass("active"); // this first remove the css class from every contact
@@ -179,33 +201,65 @@
             $(this).addClass("active"); // this adds the css class to the active contact
             //   console.log(reciever);
             $(this).find(".chat-text").html("Chatting...");
-            getKeys(reciever).then((user) => {
-              recieverLookup = user;
-              console.log(user);
+            const user = await getKeys(reciever);
+            recieverLookup = user;
+
+            socket.emit("loadMessages", {
+              userId: thisUser,
+              messageWith: reciever,
             });
           }
         });
+        socket.on("messagesLoaded", ({ chats }) => {
+          chats.messages.forEach((chat) => {
+            addChatToWindow(chat);
+          });
+        });
+
+        const addChatToWindow = (chat) => {
+          if (chat.sender === userId) {
+            sender
+              .authDecrypt(chat.msg, senderLookup[thisUser])
+              .then((text) => {
+                console.log(text);
+                const decryptedText = text;
+                $("#chat_window_ul").append(
+                  `<li class="user_message"><span>${decryptedText}</span></li>`
+                );
+              });
+          } else {
+            $("#chat_window_ul").append(
+              `<li class="contact_message">
+                <img class="user-image" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSwmDUeKI2SbaMIad13ZOpQvh8NdOALcMjrcJepUFVwUHWottKJi68D26LPiotJ1VtCqgM&usqp=CAU"/>
+                <span>${chat.msg}</span>
+              </li>`
+            );
+          }
+        };
+
         $(".send-message").on("submit", (event) => {
           // console.log("Message sent!");
           event.preventDefault();
           if (!reciever) {
             return alert("Please select a user to send a message to!");
           }
+          console.log("Message sent!");
           sendMessage();
         });
         // Emit a message event with message data as payload
         const sendMessage = () => {
           const data = $("#input_message").val();
+          console.log(data);
           var encryptedText;
           $("#input_message").val("");
           // console.log(data);
           sender.authEncrypt(data, recieverLookup[reciever]).then((text) => {
             encryptedText = text;
             console.log(encryptedText);
-            socket.emit("message", {
-              from: thisUser,
-              to: reciever,
-              msg: encryptedText,
+            socket.emit("sendMessage", {
+              userId: thisUser,
+              messageTo: reciever,
+              text: encryptedText,
             });
           });
           $("#chat_window_ul").append(
