@@ -31,59 +31,59 @@ body {
 }
 
 .logout a {
-    text-decoration: none;
-    color: #fff;
-    transition: 0.2s ease;
+  text-decoration: none;
+  color: #fff;
+  transition: 0.2s ease;
 }
 
 .logout a:hover {
-    color: rgb(223, 223, 223);
-    text-decoration: none;
+  color: rgb(223, 223, 223);
+  text-decoration: none;
 }
 
 /* ==============Stying of the 1st Column   the Chat List  */
 
 #chat_names {
-    position: absolute;
-    top: 76px;
-    bottom: 0px;
-    left: 0px;
-    width: 36%;
-    overflow-y: scroll;
-    background-color: #343B4A;
-    color: white;
-    padding: 0;
+  position: absolute;
+  top: 76px;
+  bottom: 0px;
+  left: 0px;
+  width: 36%;
+  overflow-y: scroll;
+  background-color: #343b4a;
+  color: white;
+  padding: 0;
 }
 
 #chat_text {
-    position: absolute;
-    top: 76px;
-    bottom: 0;
-    right: 0;
-    overflow-y: scroll;
-    width: 70%;
-    background-color: #ECECEC;
+  position: absolute;
+  top: 76px;
+  bottom: 0;
+  right: 0;
+  overflow-y: scroll;
+  width: 70%;
+  background-color: #ececec;
 }
 
 #chat_names_ul {
-    font-size: x-large;
-    /* margin-top: 1rem; */
-    padding: 0;
-    width: 100%;
+  font-size: x-large;
+  /* margin-top: 1rem; */
+  padding: 0;
+  width: 100%;
 }
 
 ul {
-    list-style: none;
+  list-style: none;
 }
 
 #chat_names_ul li {
-    padding: 20px;
-    width: 100%;
+  padding: 20px;
+  width: 100%;
 }
 
 #chat_names_ul li:hover {
-    cursor: pointer;
-    background-color: #18202e9d;
+  cursor: pointer;
+  background-color: #18202e9d;
 }
 
 .single-user {
@@ -100,19 +100,24 @@ ul {
   height: 4rem;
 }
 
-ul>li.active {
-    background-color: #18202E;
-    font-weight: 700;
+ul > li.active {
+  background-color: #18202e;
+  font-weight: 700;
 }
 
 #chat_names_ul li span {
-    font-size: medium;
+  font-size: medium;
 }
 
 hr {
-    border: 0;
-    height: 1px;
-    background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0));
+  border: 0;
+  height: 1px;
+  background-image: linear-gradient(
+    to right,
+    rgba(0, 0, 0, 0),
+    rgba(0, 0, 0, 0.75),
+    rgba(0, 0, 0, 0)
+  );
 }
 
 /* ========================Styling OF the 2nd Column    The chat Box/window */
@@ -137,6 +142,7 @@ hr {
 .chat_window .user_message {
   float: right;
   clear: both;
+  color: white;
 }
 
 .chat_window .contact_message span {

@@ -68,7 +68,7 @@ io.on("connection", (socket) => {
 
   socket.on("join", async ({ userId }) => {
     const users = await addUser(userId, socket.id);
-    console.log(users);
+
     const { chats, err } = await loadChatHistory(userId);
     if (chats) {
       io.emit("loadChatHistory", { chats });
@@ -80,7 +80,7 @@ io.on("connection", (socket) => {
       io.emit("connectedUsers", {
         users: users.filter((user) => user.userId !== userId),
       });
-    }, 10000);
+    }, 3000);
   });
 
   socket.on("loadMessages", async ({ userId, messageWith }) => {
@@ -94,12 +94,14 @@ io.on("connection", (socket) => {
   });
 
   socket.on("sendMessage", async ({ userId, messageTo, text }) => {
-    console.log(userId, messageTo, text);
     const { error, newMessage } = await sendMessage(userId, messageTo, text);
     const receiverSocket = findConnectedUser(messageTo);
 
     if (receiverSocket) {
-      io.to(receiverSocket.socketId).emit("newMessage", { newMessage });
+      io.to(receiverSocket.socketId).emit("newMessage", {
+        newMessage,
+        userId,
+      });
     }
     if (!error) {
       socket.emit("messageSent", { newMessage });

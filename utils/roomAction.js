@@ -29,12 +29,10 @@ const findConnectedUser = (userId) =>
 const loadChatHistory = async (userId) => {
   try {
     const currUser = await User.findOne({ username: userId });
-    const chatsWith = await ChatModel({ user: currUser._id }).populate({
-      path: "chats.messageWith",
-      select: "-password",
-      model: "User",
-    });
-    
+    const chatsWith = await ChatModel.findOne({ user: currUser._id }).populate(
+      "chats.messageWith"
+    );
+
     return { chats: chatsWith.chats };
   } catch (err) {
     console.log(err);

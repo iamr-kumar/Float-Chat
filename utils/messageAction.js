@@ -26,7 +26,6 @@ const loadMessages = async (userId, messageWith) => {
 };
 
 const sendMessage = async (userId, messageWith, message) => {
-  console.log(userId, messageWith, message);
   try {
     const sender = await User.findOne({ username: userId }).select("-password");
     const receiver = await User.findOne({ username: messageWith }).select(
@@ -48,7 +47,7 @@ const sendMessage = async (userId, messageWith, message) => {
     };
 
     const prevChat = user.chats.find(
-      (chat) => chat.messageWith._id === receiver._id
+      (chat) => chat.messageWith.toString() === receiver._id.toString()
     );
     if (prevChat) {
       prevChat.messages.push(newMessage);
@@ -63,7 +62,7 @@ const sendMessage = async (userId, messageWith, message) => {
     }
 
     const prevChatForRec = messageToUser.chats.find(
-      (chat) => chat.messageWith._id === sender._id
+      (chat) => chat.messageWith.toString() === sender._id.toString()
     );
     if (prevChatForRec) {
       prevChatForRec.messages.push(newMessage);

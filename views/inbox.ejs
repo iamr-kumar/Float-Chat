@@ -228,12 +228,20 @@
                 );
               });
           } else {
-            $("#chat_window_ul").append(
-              `<li class="contact_message">
+            sender
+              .authDecrypt(chat.msg, recieverLookup[reciever])
+              .then((text) => {
+                const decryptedText = text;
+                $("#chat_window_ul").append(
+                  `<li class="contact_message">
                 <img class="user-image" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSwmDUeKI2SbaMIad13ZOpQvh8NdOALcMjrcJepUFVwUHWottKJi68D26LPiotJ1VtCqgM&usqp=CAU"/>
-                <span>${chat.msg}</span>
+                <span>${decryptedText}</span>
               </li>`
-            );
+                );
+              });
+            // $("#chat_window_ul").append(
+
+            // );
           }
         };
 
@@ -243,7 +251,7 @@
           if (!reciever) {
             return alert("Please select a user to send a message to!");
           }
-          console.log("Message sent!");
+
           sendMessage();
         });
         // Emit a message event with message data as payload
@@ -267,22 +275,24 @@
           );
         };
         // On recieving a message from the server
-        socket.on("message", (data) => {
-          if (data.from !== reciever) {
-            alert(`${data.from} is trying to send you a message.`);
+        socket.on("newMessage", ({ newMessage, userId }) => {
+          console.log(reciever, userId);
+          if (userId !== reciever) {
+            return;
           } else {
-            console.log("Encypted message: " + data.msg);
+            console.log("Encypted message: " + newMessage.msg);
             // console.log(recieverLookup);
             sender
-              .authDecrypt(data.msg, recieverLookup[reciever])
+              .authDecrypt(newMessage.msg, recieverLookup[reciever])
               .then((text) => {
                 console.log(text);
                 const decryptedText = text;
+
                 $("#chat_window_ul").append(
                   `<li class="contact_message">
-                                <img class="user-image" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSwmDUeKI2SbaMIad13ZOpQvh8NdOALcMjrcJepUFVwUHWottKJi68D26LPiotJ1VtCqgM&usqp=CAU"/>
-                                <span>${decryptedText}</span>
-                            </li>`
+                    <img class="user-image" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSwmDUeKI2SbaMIad13ZOpQvh8NdOALcMjrcJepUFVwUHWottKJi68D26LPiotJ1VtCqgM&usqp=CAU"/>
+                    <span>${decryptedText}</span>
+                  </li>`
                 );
               });
           }
@@ -290,10 +300,10 @@
         // Remove user from list on disconnect
         socket.on("removeUser", (data) => {
           $(`#${data.name}`).remove();
-          if (data.name === reciever) {
-            alert(`${data.name} has left!`);
-            $("#chat_window_ul").html("");
-          }
+          // if (data.name === reciever) {
+          //   alert(`${data.name} has left!`);
+          //   $("#chat_window_ul").html("");
+          // }
         });
       });
     </script>
